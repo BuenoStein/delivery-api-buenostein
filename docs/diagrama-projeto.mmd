@@ -1,0 +1,195 @@
+```mermaid
+classDiagram
+    %% === MODELOS DE DOMÍNIO ===
+    class Cliente {
+        -Long id
+        -String nome
+        -String email
+        -Boolean ativo
+        -LocalDateTime dataCriacao
+        +getId() Long
+        +setId(Long) void
+        +getNome() String
+        +setNome(String) void
+        +getEmail() String
+        +setEmail(String) void
+        +getAtivo() Boolean
+        +setAtivo(Boolean) void
+        +getDataCriacao() LocalDateTime
+        +setDataCriacao(LocalDateTime) void
+    }
+
+    class Restaurante {
+        -Long id
+        -String nome
+        -String categoria
+        -String telefone
+        -BigDecimal taxaEntrega
+        -Boolean ativo
+        -LocalDateTime dataCriacao
+        +getId() Long
+        +setId(Long) void
+        +getNome() String
+        +setNome(String) void
+        +getCategoria() String
+        +setCategoria(String) void
+        +getTelefone() String
+        +setTelefone(String) void
+        +getTaxaEntrega() BigDecimal
+        +setTaxaEntrega(BigDecimal) void
+        +getAtivo() Boolean
+        +setAtivo(Boolean) void
+        +setEndereco(String) void
+    }
+
+    class Produto {
+        -Long id
+        -String nome
+        -String descricao
+        -BigDecimal preco
+        -String categoria
+        -Boolean disponivel
+        -Restaurante restaurante
+        +getId() Long
+        +setId(Long) void
+        +getNome() String
+        +setNome(String) void
+        +getDescricao() String
+        +setDescricao(String) void
+        +getPreco() BigDecimal
+        +setPreco(BigDecimal) void
+        +getCategoria() String
+        +setCategoria(String) void
+        +getDisponivel() Boolean
+        +setDisponivel(Boolean) void
+        +getRestaurante() Restaurante
+        +setRestaurante(Restaurante) void
+    }
+
+    class Pedido {
+        -Long id
+        -Cliente cliente
+        -Restaurante restaurante
+        -BigDecimal total
+        -StatusPedido status
+        -LocalDateTime dataPedido
+        +getId() Long
+        +setId(Long) void
+        +getCliente() Cliente
+        +setCliente(Cliente) void
+        +getRestaurante() Restaurante
+        +setRestaurante(Restaurante) void
+        +getTotal() BigDecimal
+        +setTotal(BigDecimal) void
+        +getStatus() StatusPedido
+        +setStatus(StatusPedido) void
+        +getDataPedido() LocalDateTime
+        +setDataPedido(LocalDateTime) void
+    }
+
+    class StatusPedido {
+        <<enumeration>>
+        PENDENTE
+        CONFIRMADO
+        PREPARANDO
+        SAIU_ENTREGA
+        ENTREGUE
+        CANCELADO
+    }
+
+    %% === REPOSITORIES ===
+    class ClienteRepository {
+        <<interface>>
+        +findByEmail(String) Optional~Cliente~
+        +findByAtivoTrue() List~Cliente~
+        +findByNomeContainingIgnoreCase(String) List~Cliente~
+        +existsByEmail(String) boolean
+        +rankingClientesPorPedidos() List~Object[]~
+    }
+
+    class RestauranteRepository {
+        <<interface>>
+        +findByCategoria(String) List~Restaurante~
+        +findByAtivoTrue() List~Restaurante~
+        +relatorioVendasPorRestaurante() List~RelatorioVendas~
+    }
+
+    class ProdutoRepository {
+        <<interface>>
+        +findByRestauranteId(Long) List~Produto~
+        +findByDisponivelTrue() List~Produto~
+        +findByCategoria(String) List~Produto~
+        +produtosMaisVendidos() List~Object[]~
+    }
+
+    class PedidoRepository {
+        <<interface>>
+        +findByClienteId(Long) List~Pedido~
+        +findByRestauranteId(Long) List~Pedido~
+        +findByStatus(StatusPedido) List~Pedido~
+        +findByDataPedidoBetween(LocalDateTime, LocalDateTime) List~Pedido~
+        +calcularTotalVendasPorRestaurante() List~Object[]~
+        +buscarPedidosComValorAcimaDe(BigDecimal) List~Pedido~
+        +relatorioPedidosPorPeriodoEStatus(LocalDateTime, LocalDateTime, StatusPedido) List~Pedido~
+    }
+
+    class RelatorioVendas {
+        <<interface>>
+        +getNomeRestaurante() String
+        +getTotalVendas() BigDecimal
+        +getQuantidePedidos() Long
+    }
+
+    %% === CONFIGURAÇÃO ===
+    class DataLoader {
+        -ClienteRepository clienteRepository
+        -RestauranteRepository restauranteRepository
+        -ProdutoRepository produtoRepository
+        -PedidoRepository pedidoRepository
+        +run(String...) void
+        -inserirClientes() void
+        -inserirRestaurantes() void
+        -testarConsultas() void
+    }
+
+    class DeliveryApiApplication {
+        +main(String[]) void
+    }
+
+    %% === RELACIONAMENTOS ===
+    Cliente ||--o{ Pedido : "faz"
+    Restaurante ||--o{ Pedido : "recebe"
+    Restaurante ||--o{ Produto : "possui"
+    Pedido }o--|| StatusPedido : "tem status"
+
+    %% Repositories gerenciam Models
+    ClienteRepository --|> Cliente : "gerencia"
+    RestauranteRepository --|> Restaurante : "gerencia"
+    ProdutoRepository --|> Produto : "gerencia"
+    PedidoRepository --|> Pedido : "gerencia"
+
+    %% DataLoader usa Repositories
+    DataLoader --> ClienteRepository : "usa"
+    DataLoader --> RestauranteRepository : "usa"
+    DataLoader --> ProdutoRepository : "usa"
+    DataLoader --> PedidoRepository : "usa"
+
+    %% Interface de Projeção
+    RestauranteRepository --|> RelatorioVendas : "retorna"
+
+    %% Aplicação principal
+    DeliveryApiApplication --> DataLoader : "inicializa"
+
+    %% === ESTILOS ===
+    classDef modelClass fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef repoClass fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef configClass fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef enumClass fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef interfaceClass fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+
+    class Cliente,Restaurante,Produto,Pedido modelClass
+    class ClienteRepository,RestauranteRepository,ProdutoRepository,PedidoRepository repoClass
+    class DataLoader,DeliveryApiApplication configClass
+    class StatusPedido enumClass
+    class RelatorioVendas interfaceClass
+```
