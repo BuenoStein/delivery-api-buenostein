@@ -1,0 +1,10 @@
+=== ENTREGA - TESTE DE ENDPOINT ===
+Data/Hora: 02/08/2025 11:46:09
+Método: GET
+URL Completa: http://localhost/api/clientes/email/inexistente@email.com
+Status HTTP: 404
+Content-Type: null
+
+
+=== RESPOSTA REAL ===
+(Resposta vazia)
