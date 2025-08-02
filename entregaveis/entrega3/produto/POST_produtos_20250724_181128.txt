@@ -1,0 +1,26 @@
+=== ENTREGA - TESTE DE ENDPOINT ===
+Data/Hora: 24/07/2025 18:11:28
+Método: POST
+URL Completa: http://localhost:8080/api/produtos
+Status HTTP: 200
+Content-Type: application/json
+
+=== DADOS ENVIADOS ===
+{
+  "nome" : "Produto 12",
+  "descricao" : "Descrição do produto",
+  "preco" : 19.99,
+  "categoria" : "Bebidas",
+  "disponivel" : true,
+  "restauranteId" : 1
+}
+
+=== RESPOSTA REAL ===
+{
+  "id" : 1,
+  "nome" : "Produto 12",
+  "categoria" : "Bebidas",
+  "descricao" : "Descrição do produto",
+  "preco" : 19.99,
+  "disponivel" : true
+}

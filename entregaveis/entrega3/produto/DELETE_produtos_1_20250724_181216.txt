@@ -1,0 +1,10 @@
+=== ENTREGA - TESTE DE ENDPOINT ===
+Data/Hora: 24/07/2025 18:12:16
+Método: DELETE
+URL Completa: http://localhost:8080/api/produtos/1
+Status HTTP: 204
+Content-Type: null
+
+
+=== RESPOSTA REAL ===
+(Resposta vazia)
