@@ -81,6 +81,6 @@ docker-compose up --build
 
 ## 📬 Contato
 
-- contato@cleberleao.com 
-- https://www.linkedin.com/in/cleberleao/ 
-- https://github.com/cleberleao
+- igorsbueno010@gmail.com 
+- [linkedin.com/in/igor-bueno/](https://www.linkedin.com/in/igor-bueno-3b0b67267/) 
+- [github.com/BuenoStein](https://github.com/BuenoStein)
